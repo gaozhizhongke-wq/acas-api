@@ -61,6 +61,9 @@ Thumbs.db
 # Secrets (NEVER commit real ones; stubs are in deploy/k8s/secret.yaml)
 # Placeholder secrets are safe to commit; real values must be in GH Actions secrets
 
+# Local one-time generated secrets (NEVER commit)
+.verify_secret.txt
+
 # Docs generated / large reports (keep the originals, exclude build artifacts)
 docs/*.md
 !docs/production_deployment.md
