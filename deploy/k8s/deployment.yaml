@@ -108,8 +108,7 @@ spec:
 
       containers:
         - name: acas-api
-          # Run Alembic migrations, then start API (migrations run per-pod, idempotent)
-          command: ["sh", "-c", "alembic upgrade head && python run.py"]
+          command: ["/app/startup.sh"]
           image: ghcr.io/acas-project/acas:v2.0.0
           imagePullPolicy: IfNotPresent
 

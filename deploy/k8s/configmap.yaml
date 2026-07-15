@@ -29,8 +29,14 @@ data:
   ACAS_RATE_LIMIT_LOGIN_REQUESTS: "10"
   ACAS_RATE_LIMIT_LOGIN_WINDOW_SECONDS: "300"
 
-  # Database SSL
-  ACAS_DB_SSL_MODE: "require"
+  # Database individual params (password from secret, URL constructed by app/startup.sh)
+  ACAS_DB_HOST: "acas-postgres.acas-prod.svc.cluster.local"
+  ACAS_DB_PORT: "5432"
+  ACAS_DB_NAME: "acas"
+  ACAS_DB_USER: "acas"
+
+  # Database SSL (set to 'require' only after CA cert is mounted)
+  ACAS_DB_SSL_MODE: "disable"
 
   # Sentry (placeholder - override with real DSN via secret)
   ACAS_SENTRY_DSN: ""

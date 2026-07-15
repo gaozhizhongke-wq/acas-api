@@ -30,6 +30,7 @@ RUN sed -i 's|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     curl \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy virtual environment
@@ -53,6 +54,10 @@ COPY --chown=acas:acas alembic.ini ./.env.example ./
 
 # Copy deploy/ (observability configs) if present
 COPY --chown=acas:acas deploy/ ./deploy/
+
+# Startup script for DB check + alembic migrations + API
+COPY --chown=acas:acas deploy/k8s/startup.sh /app/startup.sh
+RUN chmod +x /app/startup.sh
 
 # Ensure /app is writable by acas (covers subdirs created by COPY)
 RUN chown -R acas:acas /app
