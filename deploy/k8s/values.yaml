@@ -1,0 +1,104 @@
+# ACAS v2 Helm Chart Values
+# Usage: helm upgrade --install acas ./deploy/k8s/helm -f ./deploy/k8s/values.yaml -n acas-prod --create-namespace
+
+# Default image settings
+image:
+  repository: ghcr.io/acas-project/acas
+  tag: v2.0.0
+  pullPolicy: IfNotPresent
+
+# Replica count
+replicaCount: 3
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 8000
+  metricsPort: 9090
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  host: acas-api.example.com
+  tls:
+    enabled: true
+    secretName: acas-api-tls
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+# HPA configuration
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# PDB configuration
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# Resources
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+
+# Node affinity
+nodeSelector:
+  node-role.kubernetes.io/worker: ""
+
+tolerations: []
+
+# Environment variables (secrets via existingSecret)
+config:
+  ACAS_ENVIRONMENT: production
+  ACAS_DEBUG: "false"
+  ACAS_LOG_LEVEL: INFO
+  ACAS_ML_SENTIMENT_ENABLED: "false"
+  ACAS_ML_FORECAST_ENABLED: "true"
+  ACAS_RATE_LIMIT_ENABLED: "true"
+  ACAS_DB_SSL_MODE: require
+  ACAS_RATE_LIMIT_REQUESTS: "100"
+  ACAS_RATE_LIMIT_WINDOW_SECONDS: "60"
+  ACAS_RATE_LIMIT_LOGIN_REQUESTS: "10"
+  ACAS_RATE_LIMIT_LOGIN_WINDOW_SECONDS: "300"
+
+# Secrets (reference existing Kubernetes Secret)
+existingSecret:
+  name: acas-secrets
+  keys:
+    jwtSecretKey: ACAS_JWT_SECRET_KEY
+    dbPassword: ACAS_DB_PASSWORD
+    redisPassword: ACAS_REDIS_PASSWORD
+    appSecretKey: ACAS_APP_SECRET_KEY
+
+# PostgreSQL (Bitnami chart integration)
+postgresql:
+  enabled: false  # Set to true to install via Helm dependency
+  host: acas-postgres.acas-prod.svc.cluster.local
+  port: 5432
+  database: acas
+  username: acas
+  # password from existingSecret
+
+# Redis (Bitnami chart integration)
+redis:
+  enabled: false  # Set to true to install via Helm dependency
+  host: acas-redis.acas-prod.svc.cluster.local
+  port: 6379
+  # password from existingSecret
+
+# Pod labels
+podLabels: {}
+
+# Pod annotations
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8000"
+  prometheus.io/path: "/metrics"

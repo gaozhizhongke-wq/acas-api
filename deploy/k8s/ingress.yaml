@@ -1,0 +1,134 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: acas-api-ingress
+  namespace: acas-prod
+  labels:
+    app.kubernetes.io/name: acas-api
+    app.kubernetes.io/version: "2.0.0"
+  annotations:
+    # Nginx ingress controller annotations
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/limit-connections: "50"
+    # Gzip compression
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # CORS (if not handled by app)
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT GET POST DELETE PATCH OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization,Content-Type,X-Request-ID"
+    # Custom headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "DENY" always;
+      add_header X-XSS-Protection "1; mode=block" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - acas-api.example.com
+      secretName: acas-api-tls
+  rules:
+    - host: acas-api.example.com
+      http:
+        paths:
+          # Health endpoints (no auth)
+          - path: /health
+            pathType: Exact
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          - path: /ready
+            pathType: Exact
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          - path: /live
+            pathType: Exact
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          - path: /metrics
+            pathType: Exact
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          # Auth endpoints (no auth required for register/login)
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          # Users endpoints (auth required)
+          - path: /users
+            pathType: Prefix
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          # Forecast endpoints
+          - path: /forecast
+            pathType: Prefix
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          # Intelligence endpoints
+          - path: /intelligence
+            pathType: Prefix
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          # Sentiment endpoints
+          - path: /sentiment
+            pathType: Prefix
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+          # API root
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: acas-api
+                port:
+                  number: 8000
+---
+# TLS Certificate Secret (managed by cert-manager or manually)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: acas-api-tls
+  namespace: acas-prod
+type: kubernetes.io/tls
+# Fill with: kubectl create secret tls acas-api-tls --cert=fullchain.pem --key=privkey.pem
+# Or use cert-manager: https://cert-manager.io/docs/usage/acme/
+# data:
+#   tls.crt: BASE64_ENCODED_CERT
+#   tls.key: BASE64_ENCODED_KEY

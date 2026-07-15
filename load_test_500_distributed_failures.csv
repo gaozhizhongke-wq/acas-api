@@ -1,0 +1,7 @@
+Method,Name,Error,Occurrences
+POST,/api/sentiment/analyze,"ConnectionRefusedError(10061, '[WinError 10061] 由于目标计算机积极拒绝，无法连接。')",278
+POST,/api/forecast/predict,"ConnectionRefusedError(10061, '[WinError 10061] 由于目标计算机积极拒绝，无法连接。')",221
+GET,/api/users/me,"ConnectionRefusedError(10061, '[WinError 10061] 由于目标计算机积极拒绝，无法连接。')",513
+GET,/live,"ConnectionRefusedError(10061, '[WinError 10061] 由于目标计算机积极拒绝，无法连接。')",849
+GET,/health,"ConnectionRefusedError(10061, '[WinError 10061] 由于目标计算机积极拒绝，无法连接。')",1533
+GET,/ready,"ConnectionRefusedError(10061, '[WinError 10061] 由于目标计算机积极拒绝，无法连接。')",1087

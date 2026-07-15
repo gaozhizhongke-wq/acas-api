@@ -1,0 +1,29 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: acas-api-pdb
+  namespace: acas-prod
+  labels:
+    app.kubernetes.io/name: acas-api
+    app.kubernetes.io/version: "2.0.0"
+spec:
+  # Always keep at least 2 pods available during voluntary disruptions
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: acas-api
+---
+# Alternative: use maxUnavailable for canary deployments
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: acas-api-pdb-maxunavailable
+  namespace: acas-prod
+  labels:
+    app.kubernetes.io/name: acas-api
+spec:
+  # Allow at most 1 pod unavailable during updates
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: acas-api

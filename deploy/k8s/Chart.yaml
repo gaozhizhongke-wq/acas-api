@@ -1,0 +1,16 @@
+apiVersion: v2
+name: acas
+description: ACAS v2 - 大宗商品舆情与预测平台 (Kubernetes deployment)
+type: application
+version: 2.0.0
+appVersion: "2.0.0"
+keywords:
+  - commodities
+  - sentiment-analysis
+  - forecasting
+  - commodities-intelligence
+maintainers:
+  - name: ACAS Team
+    email: acas@example.com
+sources:
+  - https://github.com/acas-project/acas

@@ -1,0 +1,72 @@
+# ACAS v2 - Promtail Configuration
+# Ships container logs to Loki for aggregation
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: acas-api
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+        filters:
+          - name: name
+            values: ["acas-api*"]
+    relabel_configs:
+      - source_labels: ["__meta_docker_container_name"]
+        regex: "/(.*)"
+        target_label: "container"
+      - source_labels: ["__meta_docker_container_log_stream"]
+        target_label: "logstream"
+      - source_labels: ["__meta_docker_container_label_log_type"]
+        target_label: "log_type"
+      - target_label: "job"
+        replacement: "acas-api"
+
+  - job_name: acas-db
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+        filters:
+          - name: name
+            values: ["acas-db*"]
+    relabel_configs:
+      - source_labels: ["__meta_docker_container_name"]
+        regex: "/(.*)"
+        target_label: "container"
+      - target_label: "job"
+        replacement: "acas-db"
+
+  - job_name: acas-redis
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+        filters:
+          - name: name
+            values: ["acas-redis*"]
+    relabel_configs:
+      - source_labels: ["__meta_docker_container_name"]
+        regex: "/(.*)"
+        target_label: "container"
+      - target_label: "job"
+        replacement: "acas-redis"
+
+  # Fallback: scrape structured log files
+  - job_name: acas-logs
+    static_configs:
+      - targets: ["localhost"]
+        labels:
+          job: acas-file-logs
+          __path__: /var/log/*.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\S+) (?P<level>\S+) (?P<logger>\S+) (?P<message>.+)'
+      - labels:
+          level:
+          logger:

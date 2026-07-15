@@ -1,0 +1,32 @@
+{
+  "title": "ACAS Overview",
+  "uid": "acas-overview",
+  "version": 1,
+  "schemaVersion": 38,
+  "panels": [
+    {
+      "title": "API Requests",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "rate(acas_requests_total[5m])", "legendFormat": "Requests/s"}
+      ]
+    },
+    {
+      "title": "Database Status",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "acas_database_connected", "legendFormat": "Connected"}
+      ]
+    },
+    {
+      "title": "Redis Status",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "targets": [
+        {"expr": "acas_redis_connected", "legendFormat": "Connected"}
+      ]
+    }
+  ]
+}

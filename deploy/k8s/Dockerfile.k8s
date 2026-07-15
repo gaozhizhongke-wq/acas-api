@@ -1,0 +1,72 @@
+# =============================================================================
+# ACAS v2 — Kubernetes-Ready Dockerfile (Debian-based)
+# Multi-stage build: builder stage → runtime stage
+# Final image: ~150MB (gzip ~50MB)
+# =============================================================================
+
+# ---- Builder stage ----
+FROM python:3.11-slim-bookworm AS builder
+
+WORKDIR /app
+
+# Install build dependencies (for numpy/pandas/sklearn)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        gcc \
+        g++ \
+        libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+# Copy source code
+COPY src/ ./src/
+COPY run.py .
+COPY alembic/ ./alembic/
+COPY alembic.ini .
+
+# ---- Runtime stage ----
+FROM python:3.11-slim-bookworm AS runtime
+
+WORKDIR /app
+
+# Security: create non-root user
+RUN groupadd --gid 1000 acas && \
+    useradd --uid 1000 --gid acas --shell /bin/false --create-home acas
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libpq5 \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy installed packages from builder
+COPY --from=builder /root/.local /root/.local
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/run.py .
+COPY --from=builder /app/alembic ./alembic
+COPY --from=builder /app/alembic.ini .
+
+# Copy entrypoint script
+COPY deploy/k8s/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Security: switch to non-root user
+USER acas
+
+# Environment
+ENV PATH="/root/.local/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    ACAS_ENVIRONMENT=production
+
+# Health check (matches K8s startup probe)
+HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+EXPOSE 8000 9090
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["python", "run.py"]

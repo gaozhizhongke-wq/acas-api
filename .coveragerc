@@ -1,0 +1,20 @@
+# Coverage configuration for ACAS v2
+# Exclude ML modules (not installed in test environment)
+
+[run]
+source = src
+omit = 
+    */tests/*
+    */.venv/*
+    */venv/*
+    */ml/*
+    */sentiment/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if __name__ == .__main__.
+    raise NotImplementedError
+    except ImportError
+    if TYPE_CHECKING

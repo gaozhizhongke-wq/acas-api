@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acas-config
+  namespace: acas-prod
+  labels:
+    app.kubernetes.io/name: acas
+    app.kubernetes.io/version: "2.0.0"
+data:
+  # Application
+  ACAS_ENVIRONMENT: "production"
+  ACAS_DEBUG: "false"
+  ACAS_LOG_LEVEL: "INFO"
+
+  # API
+  ACAS_API_CORS_ORIGINS: "*"
+  ACAS_API_CORS_ALLOW_CREDENTIALS: "true"
+  ACAS_API_CORS_ALLOW_METHODS: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+  ACAS_API_CORS_ALLOW_HEADERS: "Authorization,Content-Type,X-Request-ID"
+
+  # ML
+  ACAS_ML_SENTIMENT_ENABLED: "false"
+  ACAS_ML_FORECAST_ENABLED: "true"
+
+  # Rate Limiting (Redis)
+  ACAS_RATE_LIMIT_ENABLED: "true"
+  ACAS_RATE_LIMIT_REQUESTS: "100"
+  ACAS_RATE_LIMIT_WINDOW_SECONDS: "60"
+  ACAS_RATE_LIMIT_LOGIN_REQUESTS: "10"
+  ACAS_RATE_LIMIT_LOGIN_WINDOW_SECONDS: "300"
+
+  # Database SSL
+  ACAS_DB_SSL_MODE: "require"
+
+  # Sentry (placeholder - override with real DSN via secret)
+  ACAS_SENTRY_DSN: ""
+
+  # News
+  ACAS_NEWS_FETCH_INTERVAL_MINUTES: "60"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acas-postgres-init
+  namespace: acas-prod
+  labels:
+    app.kubernetes.io/name: acas
+    app.kubernetes.io/version: "2.0.0"
+data:
+  init.sql: |
+    -- ACAS v2 Database Initialization
+    -- Run this once before deploying if not using Alembic migrations
+
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        name VARCHAR(255),
+        password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(50) DEFAULT 'user',
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS api_keys (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        key_id VARCHAR(64) UNIQUE NOT NULL,
+        key_hash VARCHAR(128) NOT NULL,
+        name VARCHAR(255),
+        permissions JSONB DEFAULT '["read"]',
+        expires_at TIMESTAMP,
+        last_used_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS refresh_tokens (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        token_hash VARCHAR(128) UNIQUE NOT NULL,
+        device_info JSONB,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS audit_logs (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        action VARCHAR(100) NOT NULL,
+        resource VARCHAR(100),
+        resource_id VARCHAR(100),
+        ip_address VARCHAR(45),
+        user_agent TEXT,
+        metadata JSONB,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS analysis_history (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        commodity VARCHAR(100),
+        sentiment_score FLOAT,
+        sentiment_label VARCHAR(20),
+        confidence FLOAT,
+        source VARCHAR(50),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS forecast_cache (
+        id SERIAL PRIMARY KEY,
+        cache_key VARCHAR(255) UNIQUE NOT NULL,
+        forecast_data JSONB NOT NULL,
+        model VARCHAR(50),
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS news_cache (
+        id SERIAL PRIMARY KEY,
+        cache_key VARCHAR(255) UNIQUE NOT NULL,
+        news_data JSONB NOT NULL,
+        source VARCHAR(100),
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+    CREATE INDEX IF NOT EXISTS idx_api_keys_key_id ON api_keys(key_id);
+    CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+    CREATE INDEX IF NOT EXISTS idx_audit_logs_user_id ON audit_logs(user_id);
+    CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at);
+    CREATE INDEX IF NOT EXISTS idx_analysis_history_user_id ON analysis_history(user_id);
+    CREATE INDEX IF NOT EXISTS idx_forecast_cache_expires_at ON forecast_cache(expires_at);
+    CREATE INDEX IF NOT EXISTS idx_news_cache_expires_at ON news_cache(expires_at);

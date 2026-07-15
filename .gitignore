@@ -1,0 +1,68 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+coverage.xml
+coverage/
+
+# Logs
+*.log
+logs/
+logs/
+
+# Local DB (dev)
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+.dockerignore
+
+# Temp / debug scripts (local only)
+_verify*.ps1
+_verify*.sh
+_verify*.py
+_docker_test*.ps1
+*.tmp
+*.bak
+*.orig
+
+# Build artifacts
+dist/
+build/
+*.whl
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (NEVER commit real ones; stubs are in deploy/k8s/secret.yaml)
+# Placeholder secrets are safe to commit; real values must be in GH Actions secrets
+
+# Docs generated / large reports (keep the originals, exclude build artifacts)
+docs/*.md
+!docs/production_deployment.md
+!docs/rollback_guide.md
+!docs/operations_manual.md

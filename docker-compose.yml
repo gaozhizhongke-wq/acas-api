@@ -1,0 +1,150 @@
+# ACAS v2 - Production Docker Compose
+# IMPORTANT: Set ACAS_SECRET_KEY before deploying
+
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ACAS_ENVIRONMENT=production
+      - ACAS_DB_URL=postgresql+psycopg://acas:${DB_PASSWORD:-changeme}@db:5432/acas
+      - ACAS_REDIS_URL=redis://:${REDIS_PASSWORD:-acas_redis_2026}@redis:6379/0
+      - ACAS_SECRET_KEY=${ACAS_SECRET_KEY:?ACAS_SECRET_KEY must be set}
+      - ACAS_ENCRYPTION_KEY=${ACAS_ENCRYPTION_KEY:-}
+      - ACAS_SENTRY_DSN=${ACAS_SENTRY_DSN:-}
+      - ACAS_RATE_LIMIT_ENABLED=true
+      - ACAS_RATE_LIMIT_REQUESTS=100
+      - ACAS_RATE_LIMIT_WINDOW_SECONDS=60
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - acas-network
+    security_opt:
+      - no-new-privileges:true
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=acas
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-changeme}
+      - POSTGRES_DB=acas
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U acas"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - acas-network
+    security_opt:
+      - no-new-privileges:true
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass acas_redis_2026
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "acas_redis_2026", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - acas-network
+    security_opt:
+      - no-new-privileges:true
+
+  # Optional: Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./deploy/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - acas-network
+    profiles:
+      - monitoring
+
+  # Optional: Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - acas-network
+    profiles:
+      - monitoring
+
+  # Optional: Loki for log aggregation
+  loki:
+    image: grafana/loki:2.9.6
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/loki.yml
+    volumes:
+      - ./deploy/loki.yml:/etc/loki/loki.yml:ro
+      - loki_data:/loki
+    restart: unless-stopped
+    networks:
+      - acas-network
+    profiles:
+      - monitoring
+
+  # Optional: Promtail for log shipping
+  promtail:
+    image: grafana/promtail:2.9.6
+    volumes:
+      - ./deploy/promtail.yml:/etc/promtail/promtail.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./logs:/var/log:ro
+    command: -config.file=/etc/promtail/promtail.yml
+    depends_on:
+      - loki
+    restart: unless-stopped
+    networks:
+      - acas-network
+    profiles:
+      - monitoring
+
+networks:
+  acas-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  loki_data:

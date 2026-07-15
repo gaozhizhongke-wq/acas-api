@@ -1,0 +1,12 @@
+# ACAS v2 - Dashboard Provisioning
+apiVersion: 1
+
+providers:
+  - name: ACAS
+    orgId: 1
+    folder: ACAS
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/json

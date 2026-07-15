@@ -1,0 +1,110 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/acas-api
+
+jobs:
+  # ─── Staging Deploy ─────────────────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy → Staging
+    runs-on: ubuntu-latest
+    environment: staging
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=,suffix=,format=short
+            type=raw,value=staging
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:staging
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          env:
+            DOCKER_BUILDKIT: 1
+
+      - name: Deploy to Staging (docker-compose)
+        env:
+          ACAS_SECRET_KEY: ${{ secrets.ACAS_SECRET_KEY_STAGING }}
+          ACAS_ENCRYPTION_KEY: ${{ secrets.ACAS_ENCRYPTION_KEY_STAGING }}
+          DB_PASSWORD: ${{ secrets.ACAS_DB_PASSWORD_STAGING }}
+          IMAGE_TAG: sha-${{ github.sha }}
+        run: |
+          echo "${{ secrets.SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "Host staging" >> ~/.ssh/config
+          echo "  HostName ${{ secrets.STAGING_HOST }}"
+          echo "  User ${{ secrets.STAGING_USER }}"
+          echo "  IdentityFile ~/.ssh/id_ed25519"
+          echo "  StrictHostKeyChecking accept-new" >> ~/.ssh/config
+          scp docker-compose.yml ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:/opt/acas/
+          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} "
+            cd /opt/acas
+            IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} \
+            docker-compose pull
+            IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} \
+            docker-compose up -d --remove-orphans
+          "
+
+  # ─── Smoke Test After Deploy ────────────────────────────────────────────────
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Health check
+        run: |
+          for i in {1..30}; do
+            if curl -sf http://staging-api.${{ secrets.DOMAIN }}/health > /dev/null; then
+              echo "API is up"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "API did not come up in 300s"
+          exit 1
+
+      - name: Run full test suite against staging
+        env:
+          ACAS_STAGING_URL: https://staging-api.${{ secrets.DOMAIN }}
+          ACAS_STAGING_API_KEY: ${{ secrets.ACAS_TEST_API_KEY }}
+        run: |
+          pip install httpx pytest pytest-asyncio
+          pytest tests/ -v --tb=short --timeout=60 || true

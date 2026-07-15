@@ -1,0 +1,51 @@
+# ACAS v2 - Slim Smoke Test Dockerfile (v2, with BuildKit cache mounts)
+# Excludes scipy/statsmodels/pandas (ML), only core API
+# For production use: use the full Dockerfile with pre-built wheels
+
+FROM python:3.11-slim
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -u 1000 acas
+
+WORKDIR /app
+
+COPY --chown=acas:acas run.py ./
+
+# Use pip cache mount for faster rebuilds
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir \
+    fastapi==0.111.0 \
+    uvicorn[standard]==0.30.0 \
+    python-multipart==0.0.9 \
+    sqlalchemy==2.0.30 \
+    psycopg[binary]==3.1.19 \
+    redis==5.0.4 \
+    passlib[argon2]==1.7.4 \
+    pyjwt==2.8.0 \
+    cryptography==42.0.7 \
+    pydantic==2.7.1 \
+    pydantic-settings==2.2.1 \
+    python-dotenv==1.0.1 \
+    aiosqlite==0.20.0 \
+    httpx==0.27.0 \
+    bcrypt==4.3.0
+
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONUNBUFFERED=1
+
+# Copy application
+COPY --chown=acas:acas src/ ./src/
+
+USER acas
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["python", "run.py"]
