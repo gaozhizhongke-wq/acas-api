@@ -67,7 +67,9 @@ def run_migrations_online() -> None:
     """
     # Alembic uses sync connections; psycopg is already a sync driver
     section = config.get_section(config.config_ini_section, {})
-    url = section.get("sqlalchemy.url", "")
+    # Resolve sqlalchemy.url: alembic.ini uses ${ACAS_DB_URL} which is NOT
+    # auto-substituted by get_section(), so resolve from environment directly.
+    url = os.environ.get("ACAS_DB_URL") or section.get("sqlalchemy.url", "")
     # Strip any async driver suffix for compat (e.g. +asyncpg → '')
     if "+asyncpg" in url:
         url = url.replace("+asyncpg", "")
