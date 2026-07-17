@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, func
 
 from api.routes.auth import require_auth, require_role, UserResponse, UserUpdateRequest
-from core.database import get_db_session
+from src.core.database import get_db_session
 from core.logging import get_logger
 from core.security import password_manager
 from api.models import User, create_audit_log

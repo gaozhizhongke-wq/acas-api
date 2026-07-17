@@ -20,13 +20,13 @@ class TestAuthBoundaries:
     """Boundary conditions for auth routes"""
 
     async def test_register_email_too_long(self, client: AsyncClient):
-        """422 for very long email"""
+        """422 for very long email (>200 chars)"""
         resp = await client.post("/auth/register", json={
-            "email": "a" * 100 + "@example.com",
+            "email": "a" * 210 + "@x.com",  # 210 + @x.com = 214 chars total > 200
             "password": "TestPass123!",
             "name": "Long"
         })
-        assert resp.status_code in (200, 422)  # May pass or fail
+        assert resp.status_code == 422  # Must reject: max_length=200
 
     async def test_register_name_special_chars(self, client: AsyncClient):
         """Test special characters in name"""
@@ -44,7 +44,7 @@ class TestAuthBoundaries:
             "email": "admin'--",
             "password": "anything"
         })
-        assert resp.status_code == 401  # Should not succeed
+        assert resp.status_code in (401, 422)  # 422: Pydantic rejects no-@ email; 401: reaches auth layer
 
 
 # ── Error Path Tests ────────────────────────────────────────────

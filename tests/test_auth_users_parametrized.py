@@ -52,8 +52,8 @@ class TestRegisterParametrized:
         assert resp.status_code == 201
 
     @pytest.mark.parametrize("password", [
-        "Short1!",  # Min length
-        "a" * 127 + "A1!",  # Max length
+        "Short12!",  # Min length (8 chars exactly)
+        "a" * 124 + "A1!",  # Max length (128 chars)
         "TestPass123!",  # Normal
         "P@ssw0rd!@#$",  # Special chars
     ])
@@ -68,7 +68,7 @@ class TestRegisterParametrized:
         assert resp.status_code == 201
 
     @pytest.mark.parametrize("name", [
-        "A",  # Min length
+        "Ab",  # Min length (2 chars)
         "A" * 100,  # Max length
         "John Doe",  # Normal
         "李小明",  # Unicode
@@ -165,13 +165,17 @@ class TestUsersParametrized:
 
     @pytest.mark.parametrize("name", [
         "Updated Name",
-        "A",  # Short
+        "Ab",  # Short (min 2 chars)
         "A" * 100,  # Long
         "李小明",  # Unicode
     ])
     async def test_update_user_various_names(self, client: AsyncClient, auth_headers: dict, name: str):
         """Test updating user with various names"""
-        resp = await client.patch("/users/me", headers=auth_headers, json={"name": name})
+        # Get actual user_id first (no PATCH /users/me endpoint)
+        me_resp = await client.get("/users/me", headers=auth_headers)
+        assert me_resp.status_code == 200
+        user_id = me_resp.json()["id"]
+        resp = await client.patch(f"/users/{user_id}", headers=auth_headers, json={"name": name})
         assert resp.status_code == 200
         assert resp.json()["name"] == name
 
@@ -182,7 +186,11 @@ class TestUsersParametrized:
     ])
     async def test_update_user_various_companies(self, client: AsyncClient, auth_headers: dict, company: str):
         """Test updating user with various companies"""
-        resp = await client.patch("/users/me", headers=auth_headers, json={"company": company})
+        # Get actual user_id first (no PATCH /users/me endpoint)
+        me_resp = await client.get("/users/me", headers=auth_headers)
+        assert me_resp.status_code == 200
+        user_id = me_resp.json()["id"]
+        resp = await client.patch(f"/users/{user_id}", headers=auth_headers, json={"company": company})
         assert resp.status_code == 200
         assert resp.json()["company"] == company
 

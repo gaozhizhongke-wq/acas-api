@@ -17,7 +17,7 @@ from core.security import (
     password_manager, token_manager, api_key_manager,
     AuthenticationError, AuthorizationError
 )
-from core.database import db, get_db_session
+from src.core.database import db, get_db_session
 from core.logging import get_logger
 from core.rate_limit import rate_limiter
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,7 +34,7 @@ def validate_email(v: str) -> str:
         raise ValueError('Invalid email format')
     return v
 
-EmailType = Annotated[str, Field(..., pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')]
+EmailType = Annotated[str, Field(..., pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', max_length=200)]
 
 
 class RegisterRequest(BaseModel):

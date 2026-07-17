@@ -118,12 +118,24 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.warning(f"Intelligence engine initialization failed: {e}")
 
+        # Honest ML status report — reflects actual initialized state
+        available_models = []
+        if timesfm_engine._initialized:
+            models_in_engine = list(timesfm_engine._models.keys())
+            model_names = [m.value for m in models_in_engine]
+            if getattr(timesfm_engine, '_arima_available', False):
+                model_names.append('arima')
+            available_models = model_names
+
         ml_status = {
-            "timesfm": timesfm_ok,
-            "sales_predictor": predictor_ok,
-            "sentiment": config.ml.sentiment_enabled
+            "forecast_engine": "ready" if timesfm_engine._initialized else "unavailable",
+            "available_models": available_models,
+            "sales_predictor": "ready" if sales_predictor._initialized else "unavailable",
+            "sentiment_mode": ("transformers" if getattr(intelligence_engine._analyzer, '_use_transformers', False)
+                               else "rule-based" if intelligence_engine._analyzer._initialized
+                               else "unavailable"),
         }
-        logger.info(f"ML services initialized: {ml_status}")
+        logger.info(f"ML services status: {ml_status}")
 
     # Run ML initialization with timeout — app starts even if ML fails
     await _init_ml_safely()

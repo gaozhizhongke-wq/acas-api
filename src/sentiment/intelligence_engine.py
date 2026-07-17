@@ -101,7 +101,9 @@ class IntelligenceEngine:
         # Only initialize sentiment analyzer if enabled
         if ml_config.ml.sentiment_enabled:
             await self._analyzer.initialize()
-            logger.info("Intelligence engine initialized (sentiment: ML)")
+            # Log ACTUAL mode based on what succeeded (not just config)
+            actual_mode = "transformers" if getattr(self._analyzer, '_use_transformers', False) else "rule-based"
+            logger.info(f"Intelligence engine initialized (sentiment: {actual_mode})")
         else:
             logger.info("Intelligence engine initialized (sentiment: disabled)")
     

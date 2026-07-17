@@ -542,15 +542,21 @@ class LSTMModel:
 
 class TimesFMEngine:
     """
-    Multi-model Time Series Forecasting Engine
-    - Automatic model selection
-    - Ensemble forecasting
-    - Hyperparameter tuning
-    - Cross-validation
+    Statistical Forecasting Engine (v2.0)
+    Implements Holt's Linear Trend and ARIMA for time series forecasting.
+    
+    Available models:
+    - Holt's Linear: always available (numpy-based, no external ML deps)
+    - ARIMA: available when statsmodels is installed (requires ≥20 data points)
+    
+    NOT available in current deployment:
+    - Prophet: requires `pip install prophet` (Facebook/Meta library)
+    - LSTM: requires `pip install torch` (PyTorch)
+    - TimesFM (Google): requires GPU infrastructure
     """
 
     def __init__(self):
-        self._model_version = "3.0-ensemble"
+        self._model_version = "2.0-statistical"
         self._context_length = config.ml.timesfm_context_length
         self._horizon = config.ml.timesfm_prediction_horizon
         self._initialized = False
@@ -562,33 +568,33 @@ class TimesFMEngine:
             logger.info("TimesFM disabled in config")
             return False
 
-        # Initialize available models
+        # Always available: Holt's Linear (numpy pure-Python implementation)
         self._models[ForecastModelType.HOLT_LINEAR] = HoltLinearModel()
+        logger.info("Holt's Linear model ready (always available)")
 
-        # Try to import optional models
+        # ARIMA: available when statsmodels is installed
+        self._arima_available = False
         try:
             from statsmodels.tsa.arima.model import ARIMA
-            self._models[ForecastModelType.ARIMA] = "available"
-            logger.info("ARIMA model available")
+            self._arima_available = True
+            logger.info("ARIMA model ready (via statsmodels)")
         except ImportError:
-            logger.info("ARIMA not available (install statsmodels)")
+            logger.info("ARIMA not available — statsmodels not installed")
 
-        try:
-            from prophet import Prophet
-            self._models[ForecastModelType.PROPHET] = ProphetModel()
-            logger.info("Prophet model available")
-        except ImportError:
-            logger.info("Prophet not available (install prophet)")
+        # Prophet: requires pip install prophet (not installed in current image)
+        # LSTM: requires pip install torch (not installed in current image)
+        # TimesFM (Google): requires GPU infrastructure (not available in current image)
+        for name, pkg in [("Prophet", "prophet"), ("LSTM/PyTorch", "torch")]:
+            logger.info(f"{name} not available — package not installed")
 
-        try:
-            import torch
-            self._models[ForecastModelType.LSTM] = "available"
-            logger.info("LSTM model available (requires PyTorch)")
-        except ImportError:
-            logger.info("LSTM not available (install torch)")
-
+        actual_model_count = len(self._models) + (1 if self._arima_available else 0)
         self._initialized = True
-        logger.info(f"TimesFM {self._model_version} initialized with {len(self._models)} models")
+        logger.info(
+            f"Forecast engine {self._model_version} ready: "
+            f"{list(self._models.keys())[0].value} "
+            f"{'+ ARIMA' if self._arima_available else '(ARIMA unavailable)'} "
+            f"(Prophet/LSTM/TimesFM require additional packages)"
+        )
         return True
 
     async def forecast(

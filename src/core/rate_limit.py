@@ -83,9 +83,14 @@ class RateLimiter:
             self._redis.close()
     
     def _parse_limit(self, limit_str: str) -> Tuple[int, int]:
-        """Parse 'count:window' format"""
-        parts = limit_str.split(":")
-        return int(parts[0]), int(parts[1])
+        """Parse 'count:window' format. Returns defaults on invalid input."""
+        try:
+            parts = limit_str.split(":")
+            if len(parts) != 2:
+                raise ValueError("Invalid format")
+            return int(parts[0]), int(parts[1])
+        except (ValueError, IndexError, TypeError):
+            return 100, 60  # defaults
     
     async def check(
         self,
@@ -171,6 +176,8 @@ class RateLimiter:
     
     def _sliding_window_sync(self, key: str, max_requests: int, window: int) -> RateLimitResult:
         """Sliding window rate limit (sync)"""
+        if self._redis is None:
+            return RateLimitResult(allowed=True, remaining=max_requests, reset_time=0, retry_after=0)
         now = time.time()
         window_start = now - window
         
@@ -207,6 +214,8 @@ class RateLimiter:
     
     def _fixed_window_sync(self, key: str, max_requests: int, window: int) -> RateLimitResult:
         """Fixed window rate limit (sync)"""
+        if self._redis is None:
+            return RateLimitResult(allowed=True, remaining=max_requests, reset_time=0, retry_after=0)
         now = int(time.time())
         window_key = f"{key}:{now // window}"
         
@@ -234,6 +243,8 @@ class RateLimiter:
     
     def _token_bucket_sync(self, key: str, max_requests: int, window: int) -> RateLimitResult:
         """Token bucket rate limit (sync)"""
+        if self._redis is None:
+            return RateLimitResult(allowed=True, remaining=max_requests, reset_time=0, retry_after=0)
         tokens_key = f"{key}:tokens"
         last_update_key = f"{key}:last_update"
         

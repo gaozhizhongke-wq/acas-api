@@ -8,11 +8,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: ["/app/startup.sh"]
     ports:
       - "8000:8000"
     environment:
       - ACAS_ENVIRONMENT=production
       - ACAS_DB_URL=postgresql+psycopg://acas:${DB_PASSWORD:-changeme}@db:5432/acas
+      - ACAS_DB_HOST=db
+      - ACAS_DB_PORT=5432
+      - ACAS_DB_USER=acas
+      - ACAS_DB_PASSWORD=${DB_PASSWORD:-changeme}
+      - ACAS_DB_NAME=acas
       - ACAS_REDIS_URL=redis://:${REDIS_PASSWORD:-acas_redis_2026}@redis:6379/0
       - ACAS_SECRET_KEY=${ACAS_SECRET_KEY:?ACAS_SECRET_KEY must be set}
       - ACAS_ENCRYPTION_KEY=${ACAS_ENCRYPTION_KEY:-}
@@ -46,9 +52,6 @@ services:
       - POSTGRES_DB=acas
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U acas"]
       interval: 10s
@@ -64,8 +67,6 @@ services:
     command: redis-server --appendonly yes --requirepass acas_redis_2026
     volumes:
       - redis_data:/data
-    ports:
-      - "6379:6379"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "acas_redis_2026", "ping"]

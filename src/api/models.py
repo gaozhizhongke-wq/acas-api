@@ -11,8 +11,8 @@ from sqlalchemy import String, Boolean, DateTime, Text, ForeignKey, Integer, Flo
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
 
-from core.database import Base
-from core.config import config
+from src.core.database import Base
+from src.core.config import config
 
 
 from sqlalchemy import TypeDecorator, JSON as SqliteJSON

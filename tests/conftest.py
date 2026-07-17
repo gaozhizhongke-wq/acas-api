@@ -36,6 +36,11 @@ src_dir = os.path.join(project_root, "src")
 sys.path.insert(0, project_root)
 sys.path.insert(1, src_dir)
 
+# MODELS ARE LOADED AUTOMATICALLY by importing src.api.main (see below).
+# All routes import api.models which registers tables with Base.metadata.
+# DO NOT import api.models directly here — it causes SQLAlchemy declarative registry
+# to detect duplicate class definitions when the same file is loaded via two module names.
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Import order matters: load app (which imports routes → models → Base) FIRST.
 # This registers all SQLAlchemy tables against the Base from src.core.database.
