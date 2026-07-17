@@ -7,7 +7,7 @@
 # NOTE: Uses Tsinghua mirrors (apt + pip) for faster builds on CN networks.
 
 # ─── Builder stage ────────────────────────────────────────────────────────────
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 # Use Tsinghua Debian mirror for faster apt on CN networks.
 RUN sed -i 's|http://deb.debian.org/debian|https://mirrors.tuna.tsinghua.edu.cn/debian|g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || true

@@ -2,10 +2,12 @@
 # Usage: helm upgrade --install acas ./deploy/k8s/helm -f ./deploy/k8s/values.yaml -n acas-prod --create-namespace
 
 # Default image settings
+# TODO (P0): Replace <GITHUB_USER> with your actual GitHub username after `git remote add origin`
+# Full GHCR URL after push: ghcr.io/<GITHUB_USER>/acas-api:v2.0.0
 image:
-  repository: ghcr.io/acas-project/acas
+  repository: ghcr.io/<GITHUB_USER>/acas-api
   tag: v2.0.0
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 # Replica count
 replicaCount: 3
@@ -63,7 +65,7 @@ config:
   ACAS_ML_SENTIMENT_ENABLED: "false"
   ACAS_ML_FORECAST_ENABLED: "true"
   ACAS_RATE_LIMIT_ENABLED: "true"
-  ACAS_DB_SSL_MODE: require
+  ACAS_DB_SSL_MODE: disable  # Change to 'require' or 'verify-full' when CA cert is provisioned
   ACAS_RATE_LIMIT_REQUESTS: "100"
   ACAS_RATE_LIMIT_WINDOW_SECONDS: "60"
   ACAS_RATE_LIMIT_LOGIN_REQUESTS: "10"

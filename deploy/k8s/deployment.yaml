@@ -109,8 +109,10 @@ spec:
       containers:
         - name: acas-api
           command: ["/app/startup.sh"]
-          image: ghcr.io/acas-project/acas:v2.0.0
-          imagePullPolicy: IfNotPresent
+          # TODO (P0): Replace with actual GHCR URL after push.
+          # After `git push` + CI run: ghcr.io/<GITHUB_USER>/acas-api:sha-<sha>
+          image: ghcr.io/<GITHUB_USER>/acas-api:v2.0.0
+          imagePullPolicy: Always
 
           ports:
             - name: http
