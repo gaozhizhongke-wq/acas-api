@@ -3,9 +3,10 @@ ACAS v2 - Health Check Routes
 Dynamic health checks with dependency validation
 """
 
+import asyncio
 from datetime import datetime, timezone
 from fastapi import APIRouter
-from src.core.database import db
+from core.database import db
 from core.rate_limit import rate_limiter
 
 router = APIRouter()
@@ -43,12 +44,12 @@ async def readiness_check():
         logger.error(f"Database health check failed: {e}")
         checks["database"] = False
     
-    # Check Redis
+    # Check Redis (sync client — use thread pool to avoid blocking)
     try:
         if rate_limiter._redis is not None:
-            await rate_limiter._redis.ping()
-            checks["redis"] = True
-            logger.info("Redis health check: OK")
+            result = await asyncio.to_thread(rate_limiter._redis.ping)
+            checks["redis"] = bool(result)
+            logger.info(f"Redis health check: {checks['redis']}")
         else:
             logger.warning("Redis not initialized")
             checks["redis"] = False
