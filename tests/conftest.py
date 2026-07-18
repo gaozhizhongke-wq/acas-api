@@ -42,6 +42,13 @@ sys.path.insert(1, src_dir)
 # to detect duplicate class definitions when the same file is loaded via two module names.
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Disable ML components in tests — prevents model downloads and long init times.
+# These must be set BEFORE config is imported, since config reads env vars at import.
+# ─────────────────────────────────────────────────────────────────────────────
+os.environ.setdefault("ACAS_ML_SENTIMENT_ENABLED", "false")
+os.environ.setdefault("ACAS_ML_TIMESFM_ENABLED", "false")
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Import order matters: load app (which imports routes → models → Base) FIRST.
 # This registers all SQLAlchemy tables against the Base from src.core.database.
 # ─────────────────────────────────────────────────────────────────────────────
