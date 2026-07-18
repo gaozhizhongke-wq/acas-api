@@ -109,10 +109,11 @@ spec:
       containers:
         - name: acas-api
           command: ["/app/startup.sh"]
-          # TODO (P0): Replace with actual GHCR URL after push.
-          # After `git push` + CI run: ghcr.io/<GITHUB_USER>/acas-api:sha-<sha>
-          image: ghcr.io/<GITHUB_USER>/acas-api:v2.0.0
-          imagePullPolicy: Always
+          # Image: defaults to locally-built `acas:v2.0.0` for local K8s (minikube/k3s).
+          # For production GHCR, set ACR_REGISTRY=ghcr.io/<GITHUB_USER>/acas-api
+          # and imagePullPolicy: Always (CI deploy.yml pushes sha-<sha> tags).
+          image: ${ACR_REGISTRY:-acas}:v2.0.0
+          imagePullPolicy: IfNotPresent
 
           ports:
             - name: http
