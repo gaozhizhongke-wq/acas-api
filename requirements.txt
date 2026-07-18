@@ -8,7 +8,8 @@ python-multipart==0.0.9
 
 # Database
 sqlalchemy[asyncio]==2.0.30
-psycopg[binary]==3.1.19  # NOTE: psycopg (sync) is used. asyncpg is NOT compatible on Windows/ProactorEventLoop.
+psycopg[binary]==3.1.19      # Sync-only; NOT used for async engine (see asyncpg below)
+asyncpg==0.29.0                # Async driver for SQLAlchemy async engine (Linux/Docker)
 alembic==1.13.1
 aiosqlite==0.20.0  # For testing
 

@@ -74,6 +74,7 @@ class Database:
     async def health_check(self) -> bool:
         """Check database connectivity"""
         if not self._engine:
+            logger.error("Database health check: engine is None")
             return False
 
         try:
@@ -81,7 +82,7 @@ class Database:
                 await conn.execute(text("SELECT 1"))
             return True
         except Exception as e:
-            logger.error(f"Database health check failed: {e}")
+            logger.exception(f"Database health check failed: {e}")
             return False
 
     async def create_tables(self, force: bool = False) -> None:

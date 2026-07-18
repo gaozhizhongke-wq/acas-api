@@ -68,6 +68,7 @@ class SalesPredictor:
     
     def __init__(self):
         self._engine = timesfm_engine
+        self._initialized = False
         self._category_seasonality = {
             ProductCategory.ELECTRONICS: {"q4_boost": 1.5, "peak_months": [11, 12]},
             ProductCategory.FASHION: {"seasonal": True, "peak_months": [3, 6, 9, 12]},
@@ -76,7 +77,9 @@ class SalesPredictor:
     
     async def initialize(self) -> bool:
         """Initialize prediction engine"""
-        return await self._engine.initialize()
+        result = await self._engine.initialize()
+        self._initialized = result
+        return result
     
     async def predict_category_sales(
         self,

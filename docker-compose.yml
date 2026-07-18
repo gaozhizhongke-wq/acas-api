@@ -13,7 +13,7 @@ services:
       - "8000:8000"
     environment:
       - ACAS_ENVIRONMENT=production
-      - ACAS_DB_URL=postgresql+psycopg://acas:${DB_PASSWORD:-changeme}@db:5432/acas
+      - ACAS_DB_URL=postgresql+asyncpg://acas:${DB_PASSWORD:-changeme}@db:5432/acas
       - ACAS_DB_HOST=db
       - ACAS_DB_PORT=5432
       - ACAS_DB_USER=acas
