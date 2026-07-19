@@ -20,14 +20,14 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 
-from core.config import config
-from core.database import db
-from core.logging import setup_logging, get_logger, LoggerAdapter
-from core.metrics import metrics_tracker
-from core.rate_limit import rate_limiter, RateLimitResult
-from core.security import AuthenticationError, token_manager
+from src.core.config import config
+from src.core.database import db
+from src.core.logging import setup_logging, get_logger, LoggerAdapter
+from src.core.metrics import metrics_tracker
+from src.core.rate_limit import rate_limiter, RateLimitResult
+from src.core.security import AuthenticationError, token_manager
 
-from api.routes import auth, users, forecast, intelligence, sentiment, health
+from src.api.routes import auth, users, forecast, intelligence, sentiment, health
 
 logger = get_logger(__name__)
 
@@ -85,9 +85,9 @@ async def lifespan(app: FastAPI):
 
     # Initialize ML models (with graceful failure — app must start even if ML fails)
     import asyncio
-    from ml.timesfm_engine import timesfm_engine
-    from ml.sales_predictor import sales_predictor
-    from sentiment.intelligence_engine import intelligence_engine
+    from src.ml.timesfm_engine import timesfm_engine
+    from src.ml.sales_predictor import sales_predictor
+    from src.sentiment.intelligence_engine import intelligence_engine
 
     async def _init_ml_safely():
         """Initialize ML with timeout and graceful error handling."""

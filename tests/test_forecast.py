@@ -7,13 +7,13 @@ import numpy as np
 from datetime import datetime, timedelta
 from typing import List, Tuple
 
-from ml.timesfm_engine import (
+from src.ml.timesfm_engine import (
     timesfm_engine,
     ForecastModelType,
     ModelSelector,
     HoltLinearModel,
 )
-from api.models import ForecastJob
+from src.api.models import ForecastJob
 
 
 class TestModelSelector:

@@ -2,9 +2,9 @@ from logging.config import fileConfig
 import sys
 import os
 
-# Add src/ to path so we can import modules as top-level packages (core, api, ml, sentiment)
+# Add project root to sys.path so 'src' is importable as a package.
 _project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(os.path.join(_project_root, 'src'))
+sys.path.insert(0, _project_root)
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -12,8 +12,8 @@ from sqlalchemy import pool
 from alembic import context
 
 # Import all models to register them with Base.metadata
-from core.database import Base
-from api import models  # This imports all models defined in api/models.py
+from src.core.database import Base
+from src.api import models  # This imports all models defined in src/api/models.py
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

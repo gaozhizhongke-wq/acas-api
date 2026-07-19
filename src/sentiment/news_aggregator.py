@@ -22,8 +22,8 @@ except ImportError:
     FEEDPARSOR_AVAILABLE = False
     feedparser = None
 
-from core.config import config
-from core.logging import get_logger
+from src.core.config import config
+from src.core.logging import get_logger
 
 logger = get_logger(__name__)
 

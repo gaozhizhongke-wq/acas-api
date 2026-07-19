@@ -4,7 +4,7 @@ ACAS v2 - Sentiment Analysis Tests
 
 import pytest
 from datetime import datetime
-from sentiment.sentiment_analyzer import (
+from src.sentiment.sentiment_analyzer import (
     sentiment_analyzer,
     SentimentLabel,
     RuleBasedSentimentAnalyzer

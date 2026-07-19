@@ -6,7 +6,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.models import User
+from src.api.models import User
 
 
 class TestUserList:
@@ -23,7 +23,7 @@ class TestUserList:
         admin_headers = {"Authorization": f"Bearer {login_response.json()['access_token']}"}
 
         # Create some test users
-        from core.security import password_manager
+        from src.core.security import password_manager
         for i in range(3):
             user = User(
                 email=f"user{i}@example.com",

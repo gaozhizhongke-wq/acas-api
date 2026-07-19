@@ -9,9 +9,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
-from api.routes.auth import require_auth
-from core.logging import get_logger
-from ml.sales_predictor import (
+from src.api.routes.auth import require_auth
+from src.core.logging import get_logger
+from src.ml.sales_predictor import (
     sales_predictor, ProductCategory, Region, SalesDataPoint
 )
 

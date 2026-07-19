@@ -30,15 +30,16 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 
-# sys.path: project root + src/ so 'from src.X' and 'from X' both resolve
+# sys.path: project root ONLY. 'src' is a package, so 'from src.X' resolves.
+# We intentionally do NOT add src/ to sys.path — that would also expose
+# api/core/ml/sentiment as top-level packages and recreate the dual-module
+# defect (same file imported as both 'src.api.models' and 'api.models').
 project_root = os.path.join(os.path.dirname(__file__), "..")
-src_dir = os.path.join(project_root, "src")
 sys.path.insert(0, project_root)
-sys.path.insert(1, src_dir)
 
 # MODELS ARE LOADED AUTOMATICALLY by importing src.api.main (see below).
-# All routes import api.models which registers tables with Base.metadata.
-# DO NOT import api.models directly here — it causes SQLAlchemy declarative registry
+# All routes import src.api.models which registers tables with Base.metadata.
+# DO NOT import src.api.models directly here — it causes SQLAlchemy declarative registry
 # to detect duplicate class definitions when the same file is loaded via two module names.
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -52,21 +53,13 @@ os.environ.setdefault("ACAS_ML_TIMESFM_ENABLED", "false")
 # Import order matters: load app (which imports routes → models → Base) FIRST.
 # This registers all SQLAlchemy tables against the Base from src.core.database.
 # ─────────────────────────────────────────────────────────────────────────────
-from src.core.database import Base
+from src.core.database import Base, db as _db
 from src.core.config import config
 from src.api.main import app
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Capture both Database instances so we can patch both when running tests.
-# 'src.core.database' (conftest style) and 'core.database' (route style) are
-# different module objects with different db instances — must patch both.
-# ─────────────────────────────────────────────────────────────────────────────
-import sys as _sys
-_SRC_CORE_MOD = _sys.modules.get("src.core.database")
-_CORE_MOD = _sys.modules.get("core.database")
-
-_orig_factory_src = _SRC_CORE_MOD.db._session_factory if _SRC_CORE_MOD else None
-_orig_factory_core = _CORE_MOD.db._session_factory if _CORE_MOD else None
+# Single Database instance (dual-module defect eliminated: all code now uses the
+# 'src.' namespace, so 'src.core.database' is the only module object).
+_orig_factory = _db._session_factory
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Test database file (recreated fresh per test via StaticPool sharing)
@@ -129,21 +122,15 @@ async def db_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
         autoflush=False,
     )
 
-    # Patch BOTH module instances (critical — they are different objects)
-    if _SRC_CORE_MOD:
-        _SRC_CORE_MOD.db._session_factory = test_sm
-    if _CORE_MOD:
-        _CORE_MOD.db._session_factory = test_sm
+    # Patch the single Database instance's session factory with the test session
+    _db._session_factory = test_sm
 
     # Yield a real session for tests that use db_session directly
     async with test_sm() as session:
         yield session
 
-    # Restore both originals
-    if _SRC_CORE_MOD:
-        _SRC_CORE_MOD.db._session_factory = _orig_factory_src
-    if _CORE_MOD:
-        _CORE_MOD.db._session_factory = _orig_factory_core
+    # Restore original factory
+    _db._session_factory = _orig_factory
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -185,8 +172,8 @@ def admin_user_data():
 @pytest_asyncio.fixture
 async def test_user(test_engine, test_user_data) -> AsyncGenerator:
     from sqlalchemy.ext.asyncio import async_sessionmaker
-    from core.security import password_manager
-    from api.models import User
+    from src.core.security import password_manager
+    from src.api.models import User
 
     sm = async_sessionmaker(test_engine, class_=AsyncSession, expire_on_commit=False, autoflush=False)
     async with sm() as session:
@@ -206,8 +193,8 @@ async def test_user(test_engine, test_user_data) -> AsyncGenerator:
 @pytest_asyncio.fixture
 async def admin_user(test_engine, admin_user_data) -> AsyncGenerator:
     from sqlalchemy.ext.asyncio import async_sessionmaker
-    from core.security import password_manager
-    from api.models import User
+    from src.core.security import password_manager
+    from src.api.models import User
 
     sm = async_sessionmaker(test_engine, class_=AsyncSession, expire_on_commit=False, autoflush=False)
     async with sm() as session:

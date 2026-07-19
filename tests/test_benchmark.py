@@ -11,7 +11,7 @@ from typing import List, Tuple
 import statistics
 
 from httpx import AsyncClient
-from api.models import User
+from src.api.models import User
 from sqlalchemy import select
 
 
@@ -98,9 +98,9 @@ class TestAPIPerformance:
         admin_headers = {"Authorization": f"Bearer {login_resp.json()['access_token']}"}
 
         # Create test users
-        from core.security import password_manager
+        from src.core.security import password_manager
         for i in range(50):
-            from api.models import User
+            from src.api.models import User
             user = User(
                 email=f"perftest{i}@example.com",
                 name=f"Perf Test {i}",
@@ -128,7 +128,7 @@ class TestSentimentPerformance:
     @pytest.mark.asyncio
     async def test_rule_based_latency(self):
         """Test rule-based sentiment analysis latency (should be <100ms)"""
-        from sentiment.sentiment_analyzer import RuleBasedSentimentAnalyzer
+        from src.sentiment.sentiment_analyzer import RuleBasedSentimentAnalyzer
 
         analyzer = RuleBasedSentimentAnalyzer()
         await analyzer.initialize()
@@ -156,7 +156,7 @@ class TestSentimentPerformance:
     @pytest.mark.asyncio
     async def test_rule_based_batch_throughput(self):
         """Test batch sentiment analysis throughput"""
-        from sentiment.sentiment_analyzer import RuleBasedSentimentAnalyzer
+        from src.sentiment.sentiment_analyzer import RuleBasedSentimentAnalyzer
 
         analyzer = RuleBasedSentimentAnalyzer()
         await analyzer.initialize()
@@ -178,7 +178,7 @@ class TestSentimentPerformance:
     @pytest.mark.skip(reason="Transformers model not always available")
     async def test_transformers_latency(self):
         """Test transformers sentiment analysis latency (should be <500ms)"""
-        from sentiment.sentiment_analyzer import TransformersSentimentAnalyzer
+        from src.sentiment.sentiment_analyzer import TransformersSentimentAnalyzer
 
         analyzer = TransformersSentimentAnalyzer()
         success = await analyzer.initialize()
@@ -209,7 +209,7 @@ class TestForecastPerformance:
     @pytest.mark.asyncio
     async def test_holt_forecast_latency(self):
         """Test Holt's linear method forecast latency (should be <200ms)"""
-        from ml.timesfm_engine import TimesFMEngine, ForecastModelType
+        from src.ml.timesfm_engine import TimesFMEngine, ForecastModelType
         from datetime import datetime, timedelta
 
         engine = TimesFMEngine()
@@ -242,7 +242,7 @@ class TestForecastPerformance:
     @pytest.mark.asyncio
     async def test_forecast_scaling(self):
         """Test forecast performance with different data sizes"""
-        from ml.timesfm_engine import TimesFMEngine, ForecastModelType
+        from src.ml.timesfm_engine import TimesFMEngine, ForecastModelType
 
         engine = TimesFMEngine()
         await engine.initialize()
@@ -275,7 +275,7 @@ class TestForecastPerformance:
     @pytest.mark.asyncio
     async def test_batch_forecast_throughput(self):
         """Test batch forecasting throughput"""
-        from ml.timesfm_engine import TimesFMEngine, ForecastModelType
+        from src.ml.timesfm_engine import TimesFMEngine, ForecastModelType
 
         engine = TimesFMEngine()
         await engine.initialize()

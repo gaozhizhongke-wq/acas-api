@@ -8,9 +8,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from api.routes.auth import require_auth
-from core.logging import get_logger
-from sentiment.intelligence_engine import intelligence_engine
+from src.api.routes.auth import require_auth
+from src.core.logging import get_logger
+from src.sentiment.intelligence_engine import intelligence_engine
 
 logger = get_logger(__name__)
 router = APIRouter()

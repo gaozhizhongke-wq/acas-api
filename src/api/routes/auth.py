@@ -13,16 +13,16 @@ from typing import Annotated
 import re
 import uuid
 
-from core.security import (
+from src.core.security import (
     password_manager, token_manager, api_key_manager,
     AuthenticationError, AuthorizationError
 )
 from src.core.database import db, get_db_session
-from core.logging import get_logger
-from core.rate_limit import rate_limiter
+from src.core.logging import get_logger
+from src.core.rate_limit import rate_limiter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
-from api.models import User, APIKey, create_audit_log
+from src.api.models import User, APIKey, create_audit_log
 
 logger = get_logger(__name__)
 router = APIRouter()
@@ -632,4 +632,4 @@ async def revoke_api_key(
 
 
 # Import config for token expiration
-from core.config import config
+from src.core.config import config

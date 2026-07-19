@@ -11,7 +11,7 @@ import asyncio
 
 from .news_aggregator import NewsAggregator, NewsArticle, NewsCategory, news_aggregator
 from .sentiment_analyzer import SentimentAnalyzer, SentimentResult, sentiment_analyzer
-from core.logging import get_logger
+from src.core.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -95,7 +95,7 @@ class IntelligenceEngine:
     
     async def initialize(self) -> None:
         """Initialize engine — only start sub-components that are enabled."""
-        from core.config import config as ml_config
+        from src.core.config import config as ml_config
         # Initialize news aggregator (always safe, just HTTP calls)
         await self._aggregator.initialize()
         # Only initialize sentiment analyzer if enabled

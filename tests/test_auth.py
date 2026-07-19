@@ -6,7 +6,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.models import User
+from src.api.models import User
 
 
 class TestAuthRegistration:

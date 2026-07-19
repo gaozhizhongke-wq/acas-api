@@ -9,7 +9,7 @@ from typing import List, Dict, Optional, Any
 from enum import Enum
 
 from .timesfm_engine import timesfm_engine, ForecastResult
-from core.logging import get_logger
+from src.core.logging import get_logger
 
 logger = get_logger(__name__)
 

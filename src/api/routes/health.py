@@ -6,8 +6,8 @@ Dynamic health checks with dependency validation
 import asyncio
 from datetime import datetime, timezone
 from fastapi import APIRouter
-from core.database import db
-from core.rate_limit import rate_limiter
+from src.core.database import db
+from src.core.rate_limit import rate_limiter
 
 router = APIRouter()
 

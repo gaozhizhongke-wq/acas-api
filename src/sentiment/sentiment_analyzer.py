@@ -12,9 +12,9 @@ import re
 import json
 from pathlib import Path
 
-from core.config import config
-from core.logging import get_logger
-from core.security import secure_compare
+from src.core.config import config
+from src.core.logging import get_logger
+from src.core.security import secure_compare
 
 logger = get_logger(__name__)
 

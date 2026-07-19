@@ -13,8 +13,8 @@ import warnings
 from enum import Enum
 import pandas as pd
 
-from core.config import config
-from core.logging import get_logger
+from src.core.config import config
+from src.core.logging import get_logger
 
 logger = get_logger(__name__)
 
