@@ -34,9 +34,14 @@ scipy==1.13.0
 statsmodels==0.14.2
 
 # NLP - Sentiment Analysis (optional but recommended)
-# Uncomment to enable Transformers-based sentiment analysis
-# transformers==4.41.0
-# torch==2.3.0  # Or torch-cpu for production
+# ── ML dependencies (lazy-loaded; degrade gracefully when absent) ────────
+# SentencePiece is required by the XLM-RoBERTa tokenizer.
+# Install transformers to enable the ML sentiment model (XLM-RoBERTa).
+# Without it, the system falls back to the rule-based sentiment engine.
+# torch is optional — transformers runs on CPU for inference (no GPU required).
+sentencepiece==0.2.0
+# transformers==4.41.0  # Uncomment for ML sentiment (adds ~1 GB to image)
+# torch==2.3.0          # Optional: uncomment if torch is needed for inference
 # accelarate==0.30.0
 
 # Alternative: Use ONNX Runtime for lighter deployment

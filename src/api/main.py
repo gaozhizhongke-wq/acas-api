@@ -93,28 +93,28 @@ async def lifespan(app: FastAPI):
         """Initialize ML with timeout and graceful error handling."""
 
         try:
-            timesfm_ok = await asyncio.wait_for(timesfm_engine.initialize(), timeout=30)
+            timesfm_ok = await asyncio.wait_for(timesfm_engine.initialize(), timeout=60)
         except asyncio.TimeoutError:
-            logger.warning("TimesFM initialization timed out (30s) — continuing without it")
+            logger.warning("TimesFM initialization timed out (60s) — continuing without it")
             timesfm_ok = False
         except Exception as e:
             logger.warning(f"TimesFM initialization failed: {e}")
             timesfm_ok = False
 
         try:
-            predictor_ok = await asyncio.wait_for(sales_predictor.initialize(), timeout=30)
+            predictor_ok = await asyncio.wait_for(sales_predictor.initialize(), timeout=60)
         except asyncio.TimeoutError:
-            logger.warning("Sales predictor initialization timed out (30s) — continuing without it")
+            logger.warning("Sales predictor initialization timed out (60s) — continuing without it")
             predictor_ok = False
         except Exception as e:
             logger.warning(f"Sales predictor initialization failed: {e}")
             predictor_ok = False
 
         try:
-            # intelligence_engine.initialize() itself guards disabled sub-components
-            await asyncio.wait_for(intelligence_engine.initialize(), timeout=60)
+            # sentiment_analyzer.initialize() has 300s inner timeout; give outer 320s to load XLM-RoBERTa on CPU
+            await asyncio.wait_for(intelligence_engine.initialize(), timeout=320)
         except asyncio.TimeoutError:
-            logger.warning("Intelligence engine initialization timed out (60s) — continuing without it")
+            logger.warning("Intelligence engine initialization timed out (320s) — continuing without ML sentiment")
         except Exception as e:
             logger.warning(f"Intelligence engine initialization failed: {e}")
 

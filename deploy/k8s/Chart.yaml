@@ -1,6 +1,6 @@
 apiVersion: v2
 name: acas
-description: ACAS v2 - 大宗商品舆情与预测平台 (Kubernetes deployment)
+description: ACAS v2 - Commodities Intelligence Platform (Kubernetes deployment)
 type: application
 version: 2.0.0
 appVersion: "2.0.0"

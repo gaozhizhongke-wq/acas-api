@@ -81,6 +81,13 @@ class TransformersSentimentAnalyzer:
             """Load the ML model with timeout."""
             from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
             import torch
+            import os
+
+            # Force offline mode — model files are already cached locally.
+            # Without this, transformers still tries to reach HuggingFace for metadata
+            # even when full model files exist on disk (causes ConnectTimeout).
+            os.environ.setdefault("HF_HUB_OFFLINE", "1")
+            os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
             if torch.cuda.is_available():
                 self._device = 0

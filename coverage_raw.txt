@@ -1,0 +1,145 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.0.3, pluggy-1.6.0
+Fugue tests will be initialized with options:
+rootdir: C:\Users\HUAWEI\.qclaw\workspace-agent-eb98a2a2\acas-v2
+configfile: pyproject.toml
+plugins: anyio-3.7.1, fugue-0.9.7, langsmith-0.7.35, locust-2.44.1, asyncio-1.3.0, base-url-2.1.0, cov-7.1.0, forked-1.6.0, mock-3.15.1, playwright-0.7.2, timeout-2.4.0, xdist-3.8.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 30.0s
+timeout method: thread
+timeout func_only: False
+collected 403 items / 7 deselected / 396 selected
+
+tests\test_api_key_auth.py s..                                           [  0%]
+tests\test_auth.py ................                                      [  4%]
+tests\test_auth_coverage_final.py ..............                         [  8%]
+tests\test_auth_mass.py ............................                     [ 15%]
+tests\test_auth_routes.py ..........................                     [ 21%]
+tests\test_auth_users_parametrized.py .................................. [ 30%]
+.....                                                                    [ 31%]
+tests\test_benchmark.py ......s......                                    [ 35%]
+tests\test_config.py ..................                                  [ 39%]
+tests\test_critical_paths.py ...s.s                                      [ 41%]
+tests\test_database.py ............                                      [ 44%]
+tests\test_forecast.py ............                                      [ 47%]
+tests\test_health.py ..                                                  [ 47%]
+tests\test_health_coverage_extra.py ....                                 [ 48%]
+tests\test_health_parametrized.py ...........                            [ 51%]
+tests\test_integration.py ...................................            [ 60%]
+tests\test_integration_workflow.py ....                                  [ 61%]
+tests\test_logging.py ........                                           [ 63%]
+tests\test_p0_coverage_push.py .................................         [ 71%]
+tests\test_pii.py .................                                      [ 76%]
+tests\test_rate_limit.py .......                                         [ 77%]
+tests\test_rate_limiter_correct.py ..........                            [ 80%]
+tests\test_routes_coverage.py ..........                                 [ 82%]
+tests\test_security_unit.py ...............                              [ 86%]
+tests\test_sentiment.py ............                                     [ 89%]
+tests\test_users.py ..............                                       [ 93%]
+tests\test_users_coverage_final.py ..............                        [ 96%]
+tests\test_users_routes.py .............                                 [100%]
+
+============================== warnings summary ===============================
+tests\conftest.py:25
+  C:\Users\HUAWEI\.qclaw\workspace-agent-eb98a2a2\acas-v2\tests\conftest.py:25: DeprecationWarning: 'asyncio.WindowsSelectorEventLoopPolicy' is deprecated and slated for removal in Python 3.16
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+tests\conftest.py:25
+  C:\Users\HUAWEI\.qclaw\workspace-agent-eb98a2a2\acas-v2\tests\conftest.py:25: DeprecationWarning: 'asyncio.set_event_loop_policy' is deprecated and slated for removal in Python 3.16
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+src\api\main.py:15
+  C:\Users\HUAWEI\.qclaw\workspace-agent-eb98a2a2\acas-v2\tests\..\src\api\main.py:15: DeprecationWarning: 'asyncio.WindowsSelectorEventLoopPolicy' is deprecated and slated for removal in Python 3.16
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+src\api\main.py:15
+  C:\Users\HUAWEI\.qclaw\workspace-agent-eb98a2a2\acas-v2\tests\..\src\api\main.py:15: DeprecationWarning: 'asyncio.set_event_loop_policy' is deprecated and slated for removal in Python 3.16
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+tests/test_api_key_auth.py::TestAPIKeyAuth::test_api_key_auth_works
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\passlib\handlers\argon2.py:716: DeprecationWarning: Accessing argon2.__version__ is deprecated and will be removed in a future release. Use importlib.metadata directly to query for argon2-cffi's packaging metadata.
+    _argon2_cffi.__version__, max_version)
+
+tests/test_api_key_auth.py: 13 warnings
+tests/test_auth.py: 40 warnings
+tests/test_auth_coverage_final.py: 52 warnings
+tests/test_auth_mass.py: 6 warnings
+tests/test_auth_routes.py: 66 warnings
+tests/test_auth_users_parametrized.py: 132 warnings
+tests/test_benchmark.py: 125 warnings
+tests/test_critical_paths.py: 7 warnings
+tests/test_forecast.py: 2 warnings
+tests/test_integration_workflow.py: 15 warnings
+tests/test_p0_coverage_push.py: 17 warnings
+tests/test_routes_coverage.py: 24 warnings
+tests/test_users.py: 64 warnings
+tests/test_users_coverage_final.py: 53 warnings
+tests/test_users_routes.py: 76 warnings
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/test_forecast.py::TestModelSelector::test_stable_series
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py:3023: RuntimeWarning: invalid value encountered in divide
+    c /= stddev[:, None]
+
+tests/test_forecast.py::TestModelSelector::test_stable_series
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py:576: RuntimeWarning: Mean of empty slice
+    avg = a.mean(axis, **keepdims_kw)
+
+tests/test_forecast.py::TestModelSelector::test_stable_series
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\_core\_methods.py:134: RuntimeWarning: invalid value encountered in divide
+    ret = um.true_divide(
+
+tests/test_forecast.py::TestModelSelector::test_stable_series
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py:3015: RuntimeWarning: Degrees of freedom <= 0 for slice
+    c = cov(x, y, rowvar, dtype=dtype)
+
+tests/test_forecast.py::TestModelSelector::test_stable_series
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py:2888: RuntimeWarning: divide by zero encountered in divide
+    c *= np.true_divide(1, fact)
+
+tests/test_forecast.py::TestModelSelector::test_stable_series
+  C:\Users\HUAWEI\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\lib\_function_base_impl.py:2888: RuntimeWarning: invalid value encountered in multiply
+    c *= np.true_divide(1, fact)
+
+tests/test_forecast.py::TestForecastIntegration::test_forecast_job_workflow
+  C:\Users\HUAWEI\.qclaw\workspace-agent-eb98a2a2\acas-v2\tests\test_forecast.py:275: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    self.db.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/test_forecast.py::TestForecastIntegration::test_forecast_job_workflow
+  C:\Users\HUAWEI\.qclaw\workspace-agent-eb98a2a2\acas-v2\tests\test_forecast.py:296: RuntimeWarning: coroutine 'AsyncSession.commit' was never awaited
+    self.db.commit()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.14.3-final-0 _______________
+
+Name                             Stmts   Miss  Cover   Missing
+--------------------------------------------------------------
+src\__init__.py                      1      0   100%
+src\api\__init__.py                  1      0   100%
+src\api\main.py                    177     78    56%   39-149, 188, 226-228, 260, 281, 308, 325-327
+src\api\main_minimal.py             48     48     0%   6-147
+src\api\models.py                  108      1    99%   31
+src\api\routes\__init__.py           2      0   100%
+src\api\routes\auth.py             194     29    85%   33-35, 104-141, 171, 177, 194-201, 291-295, 328, 338-339, 521
+src\api\routes\forecast.py          43     14    67%   65-108, 122-138, 144
+src\api\routes\health.py            42      0   100%
+src\api\routes\intelligence.py      37      2    95%   96, 130
+src\api\routes\sentiment.py         35      0   100%
+src\api\routes\users.py            117     18    85%   59, 101-102, 105-109, 200, 216, 223, 277, 292, 323-337
+src\core\__init__.py                 6      0   100%
+src\core\config.py                 124      5    96%   56-57, 105, 114, 122
+src\core\database.py                91     12    87%   49, 102-108, 117-121, 145
+src\core\logging.py                 62     13    79%   53, 61, 81, 103-140, 165-170
+src\core\metrics.py                 79      3    96%   65, 107-108
+src\core\pii.py                     46      1    98%   59
+src\core\rate_limit.py             155     37    76%   82-83, 106-114, 121-127, 134-138, 145, 209, 217-238, 247, 270, 285-286
+src\core\security.py               165     37    78%   50-54, 59-60, 68-69, 77, 150, 160, 212, 230, 237-241, 254-255, 259, 263-265, 269-274, 297-300, 304, 313, 318
+--------------------------------------------------------------
+TOTAL                             1533    298    81%
+========= 392 passed, 4 skipped, 7 deselected, 705 warnings in 45.95s =========
