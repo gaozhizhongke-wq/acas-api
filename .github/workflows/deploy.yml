@@ -21,7 +21,6 @@ jobs:
   deploy-staging:
     name: Deploy → Staging
     runs-on: ubuntu-latest
-    environment: staging
     if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
 
     steps:
