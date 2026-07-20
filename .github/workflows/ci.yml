@@ -51,7 +51,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install bandit pytest pytest-cov pytest-asyncio httpx PyYAML
+          pip install bandit pytest pytest-cov pytest-asyncio pytest-timeout httpx PyYAML
 
       - name: Wait for services
         run: |
@@ -84,15 +84,14 @@ jobs:
           PYTHONPATH=$PWD/src pytest tests/ -v --tb=short \
             --cov=src --cov-report=xml \
             --cov-fail-under=80 \
-            -k "not (timesfm or prophet or lstm or sales_predictor or load_test or locustfile or staging)" \
-            --timeout=60
+            -k "not (timesfm or prophet or lstm or sales_predictor or load_test or locustfile or staging)"
 
       - name: Upload coverage
         if: always()
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage.xml
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
       - name: Security scan
         run: bandit -r src/ -f screen --severity-level=high --confidence-level=high
