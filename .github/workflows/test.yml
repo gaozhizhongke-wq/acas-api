@@ -5,9 +5,33 @@ on:
     branches: [main]
 
 jobs:
-  hello:
+  test-postgres:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: acas
+          POSTGRES_PASSWORD: acas_test
+          POSTGRES_DB: acas_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - run: echo "Hello from GitHub Actions"
-      - run: echo "Testing basic runner"
-      - run: date
+      - name: Check postgres
+        run: |
+          echo "Waiting for postgres..."
+          for i in {1..20}; do
+            if pg_isready -h localhost -p 5432 -U acas > /dev/null 2>&1; then
+              echo "PostgreSQL is up!"
+              psql -h localhost -U acas -d acas_test -c "SELECT version();"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "PostgreSQL failed to start"
+          exit 1
