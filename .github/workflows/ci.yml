@@ -11,7 +11,6 @@ env:
   PYTHON_VERSION: "3.11"
 
 jobs:
-  # ─── Unit Tests ──────────────────────────────────────────────────────────────
   test:
     name: Test (Python ${{ env.PYTHON_VERSION }})
     runs-on: ubuntu-latest
@@ -56,17 +55,13 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install bandit
+          pip install bandit pytest pytest-cov pytest-asyncio httpx PyYAML
 
-      # ── Full test suite (Redis ON, ML OFF, coverage gate enforced) ──────
-      # Excludes only ML-engine tests (timesfm/prophet/lstm/sales_predictor)
-      # that would attempt model downloads. Route-layer sentiment/intelligence
-      # tests run in rule-based fallback mode (no model download needed).
-      - name: Run full test suite (rate-limit, auth, security ON)
+      - name: Run full test suite (rate-limit ON, ML OFF, coverage gate 80%)
         env:
           ACAS_DB_URL: postgresql+psycopg://acas:acas_test@localhost:5432/acas_test
           ACAS_REDIS_URL: redis://acas_test_redis@localhost:6379/0
-          ACAS_RATE_LIMIT_ENABLED: "true"       # P0-4 FIX: test with rate-limit ON
+          ACAS_RATE_LIMIT_ENABLED: "true"
           ACAS_ML_SENTIMENT_ENABLED: "false"
           HF_ENDPOINT: https://hf-mirror.com
           PYTHONPATH: ${{ github.workspace }}/src
@@ -77,32 +72,16 @@ jobs:
             -k "not (timesfm or prophet or lstm or sales_predictor or load_test or locustfile or staging)" \
             --timeout=60
 
-      # ── ML engine tests (informational only, graceful degradation) ─────
-      - name: Run ML engine tests (ML disabled, no model download)
-        continue-on-error: true
-        env:
-          ACAS_DB_URL: postgresql+psycopg://acas:acas_test@localhost:5432/acas_test
-          ACAS_REDIS_URL: redis://acas_test_redis@localhost:6379/0
-          ACAS_RATE_LIMIT_ENABLED: "false"
-          ACAS_ML_SENTIMENT_ENABLED: "false"
-          HF_ENDPOINT: https://hf-mirror.com
-          PYTHONPATH: ${{ github.workspace }}/src
-        run: |
-          PYTHONPATH=$PWD/src pytest tests/ -v --tb=short \
-            -k "timesfm or prophet or lstm or sales_predictor" \
-            --timeout=60 || true
-
       - name: Upload coverage
+        if: always()
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           fail_ci_if_error: true
 
-      # ── Security scan (P0-4 FIX: no `|| true`) ─────────────────────────
       - name: Security scan (Bandit)
         run: bandit -r src/ -f screen --severity-level=high --confidence-level=high
 
-  # ─── Docker Build ────────────────────────────────────────────────────────────
   docker:
     name: Docker Build
     runs-on: ubuntu-latest
