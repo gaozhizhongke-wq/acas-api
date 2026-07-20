@@ -22,24 +22,25 @@ jobs:
           POSTGRES_USER: acas
           POSTGRES_PASSWORD: acas_test
           POSTGRES_DB: acas_test
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
 
       redis:
         image: redis:7-alpine
-        command: redis-server --appendonly yes --requirepass acas_test_redis
+        env:
+          REDIS_PASSWORD: acas_test_redis
+        ports:
+          - 6379:6379
         options: >-
-          --health-cmd "redis-cli -a acas_test_redis ping"
+          --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 6379:6379
 
     steps:
       - uses: actions/checkout@v4
@@ -57,10 +58,10 @@ jobs:
           pip install -r requirements.txt
           pip install bandit pytest pytest-cov pytest-asyncio httpx PyYAML
 
-      - name: Run full test suite (rate-limit ON, ML OFF, coverage gate 80%)
+      - name: Run full test suite
         env:
           ACAS_DB_URL: postgresql+psycopg://acas:acas_test@localhost:5432/acas_test
-          ACAS_REDIS_URL: redis://acas_test_redis@localhost:6379/0
+          ACAS_REDIS_URL: redis://:acas_test_redis@localhost:6379/0
           ACAS_RATE_LIMIT_ENABLED: "true"
           ACAS_ML_SENTIMENT_ENABLED: "false"
           HF_ENDPOINT: https://hf-mirror.com
