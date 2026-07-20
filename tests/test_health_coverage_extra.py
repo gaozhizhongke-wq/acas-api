@@ -8,6 +8,7 @@ the dual-module import issue (conftest adds both project root and src/ to path).
 import pytest
 import pytest_asyncio
 from unittest.mock import patch, MagicMock, AsyncMock
+from httpx import AsyncClient
 
 
 class TestReadinessSuccessPath:
