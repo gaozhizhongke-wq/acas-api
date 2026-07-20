@@ -32,8 +32,6 @@ jobs:
 
       redis:
         image: redis:7-alpine
-        env:
-          REDIS_PASSWORD: acas_test_redis
         ports:
           - 6379:6379
         options: >-
@@ -58,10 +56,22 @@ jobs:
           pip install -r requirements.txt
           pip install bandit pytest pytest-cov pytest-asyncio httpx PyYAML
 
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..30}; do
+            if pg_isready -h localhost -p 5432 -U acas > /dev/null 2>&1; then
+              echo "PostgreSQL is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "PostgreSQL did not start"
+          exit 1
+
       - name: Run full test suite
         env:
           ACAS_DB_URL: postgresql+psycopg://acas:acas_test@localhost:5432/acas_test
-          ACAS_REDIS_URL: redis://:acas_test_redis@localhost:6379/0
+          ACAS_REDIS_URL: redis://localhost:6379/0
           ACAS_RATE_LIMIT_ENABLED: "true"
           ACAS_ML_SENTIMENT_ENABLED: "false"
           HF_ENDPOINT: https://hf-mirror.com
