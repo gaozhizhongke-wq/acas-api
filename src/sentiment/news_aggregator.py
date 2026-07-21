@@ -235,7 +235,7 @@ class NewsAggregator:
                     relevance = self._calculate_relevance(entry, category)
                     
                     article = NewsArticle(
-                        id=f"rss_{hashlib.md5(entry.link.encode()).hexdigest()[:12]}",
+                        id=f"rss_{hashlib.md5(entry.link.encode(), usedforsecurity=False).hexdigest()[:12]}",
                         title=entry.get("title", "")[:200],
                         content=entry.get("summary", entry.get("description", ""))[:2000],
                         summary=entry.get("summary", "")[:500],
@@ -309,7 +309,7 @@ class NewsAggregator:
                         continue
                     
                     article = NewsArticle(
-                        id=f"newsapi_{hashlib.md5(article_data['url'].encode()).hexdigest()[:12]}",
+                        id=f"newsapi_{hashlib.md5(article_data['url'].encode(), usedforsecurity=False).hexdigest()[:12]}",
                         title=article_data.get("title", "")[:200],
                         content=article_data.get("content", "") or article_data.get("description", ""),
                         summary=article_data.get("description", "")[:500],
@@ -383,7 +383,7 @@ class NewsAggregator:
                     
                     # Extract article
                     article = NewsArticle(
-                        id=f"gdelt_{item.get('articleid', hashlib.md5(item.get('url', '').encode()).hexdigest()[:12])}",
+                        id=f"gdelt_{item.get('articleid', hashlib.md5(item.get('url', '').encode(), usedforsecurity=False).hexdigest()[:12])}",
                         title=item.get("title", "")[:200],
                         content=item.get("snippet", "")[:1000],
                         summary=item.get("snippet", "")[:500],

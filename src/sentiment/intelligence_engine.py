@@ -253,7 +253,7 @@ class IntelligenceEngine:
         """Create a risk alert"""
         import hashlib
         
-        alert_id = hashlib.md5(f"{title}:{datetime.now().isoformat()}".encode()).hexdigest()[:12]
+        alert_id = hashlib.md5(f"{title}:{datetime.now().isoformat()}".encode(), usedforsecurity=False).hexdigest()[:12]
         
         actions = self._recommend_actions(alert_type, level)
         
