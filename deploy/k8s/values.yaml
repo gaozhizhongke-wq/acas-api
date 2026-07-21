@@ -2,10 +2,9 @@
 # Usage: helm upgrade --install acas ./deploy/k8s/helm -f ./deploy/k8s/values.yaml -n acas-prod --create-namespace
 
 # Default image settings
-# TODO (P0): Replace <GITHUB_USER> with your actual GitHub username after `git remote add origin`
-# Full GHCR URL after push: ghcr.io/<GITHUB_USER>/acas-api:v2.0.0
+# GHCR URL: ghcr.io/gaozhizhongke-wq/acas-api:v2.0.0
 image:
-  repository: ghcr.io/<GITHUB_USER>/acas-api
+  repository: ghcr.io/gaozhizhongke-wq/acas-api
   tag: v2.0.0
   pullPolicy: Always
 

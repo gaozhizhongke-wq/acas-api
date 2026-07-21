@@ -14,6 +14,11 @@ resources:
   - pdb.yaml
   - ingress.yaml
 
+images:
+  - name: acas
+    newName: ghcr.io/gaozhizhongke-wq/acas-api
+    newTag: v2.0.0
+
 commonLabels:
   app.kubernetes.io/managed-by: kustomize
   app.kubernetes.io/part-of: acas

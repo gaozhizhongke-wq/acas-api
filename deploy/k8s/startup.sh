@@ -9,7 +9,7 @@
 #   - docker-compose may only set ACAS_DB_URL; we parse it as fallback
 
 # If individual DB vars are missing, parse them from ACAS_DB_URL
-# Format: postgresql+asyncpg://user:password@host:port/dbname
+# Format: postgresql+psycopg://user:password@host:port/dbname
 if [ -z "${ACAS_DB_HOST}" ] && [ -n "${ACAS_DB_URL}" ]; then
     echo "[startup] Parsing DB connection from ACAS_DB_URL..."
     ACAS_DB_USER=$(echo "${ACAS_DB_URL}" | sed -E 's|.*://([^:]+):.*|\1|')
@@ -42,7 +42,7 @@ echo "[startup] PostgreSQL is ready!"
 
 # Build the full DB URL and export it so python run.py picks it up
 # (psql also needs PGPASSWORD for its own auth)
-export ACAS_DB_URL="postgresql+asyncpg://${ACAS_DB_USER}:${ACAS_DB_PASSWORD}@${ACAS_DB_HOST}:${ACAS_DB_PORT}/${ACAS_DB_NAME}"
+export ACAS_DB_URL="postgresql+psycopg://${ACAS_DB_USER}:${ACAS_DB_PASSWORD}@${ACAS_DB_HOST}:${ACAS_DB_PORT}/${ACAS_DB_NAME}"
 export PGPASSWORD="${ACAS_DB_PASSWORD}"
 
 # Run Alembic migrations

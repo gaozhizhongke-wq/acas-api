@@ -109,10 +109,9 @@ spec:
       containers:
         - name: acas-api
           command: ["/app/startup.sh"]
-          # Image: defaults to locally-built `acas:v2.0.0` for local K8s (minikube/k3s).
-          # For production GHCR, set ACR_REGISTRY=ghcr.io/<GITHUB_USER>/acas-api
-          # and imagePullPolicy: Always (CI deploy.yml pushes sha-<sha> tags).
-          image: ${ACR_REGISTRY:-acas}:v2.0.0
+          # Image: overridden by kustomization.yaml images: directive to GHCR.
+          # For local K8s (minikube/k3s), build locally and remove images: from kustomization.
+          image: acas:v2.0.0
           imagePullPolicy: IfNotPresent
 
           ports:
