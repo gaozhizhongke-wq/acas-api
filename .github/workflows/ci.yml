@@ -101,8 +101,4 @@ jobs:
 
       - name: Verify Docker image
         run: |
-          docker run --rm acas-api:ci python -c "
-            import sys; sys.path.insert(0, 'src')
-            from core.config import Settings
-            print('Docker image OK')
-          "
+          docker run --rm acas-api:ci python -c "import sys; sys.path.insert(0, 'src'); from core.config import Settings; print('Docker image OK')"
