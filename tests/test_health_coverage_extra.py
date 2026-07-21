@@ -1,1 +1,66 @@
-IiIiCkV4dHJhIGhlYWx0aCByb3V0ZSBjb3ZlcmFnZTogc3VjY2VzcyBwYXRocyBmb3IgL3JlYWR5IChkYiArIHJlZGlzIGhlYWx0aHkpLApleGNlcHRpb24gcGF0aHMgZm9yIGRiIGNoZWNrLCBhbmQgcmVkaXMtbm90LWluaXRpYWxpemVkIHBhdGguCk5PVEU6IHJvdXRlIG1vZHVsZSBpcyAnc3JjLmFwaS5yb3V0ZXMuaGVhbHRoJyAobm90ICdzcmMuc3JjLmFwaS5yb3V0ZXMuaGVhbHRoJykgZHVlIHRvCnRoZSBkdWFsLW1vZHVsZSBpbXBvcnQgaXNzdWUgKGNvbmZ0ZXN0IGFkZHMgYm90aCBwcm9qZWN0IHJvb3QgYW5kIHNyYy8gdG8gcGF0aCkuCiIiIgoKaW1wb3J0IHB5dGVzdAppbXBvcnQgcHl0ZXN0X2FzeW5jaW8KZnJvbSB1bml0dGVzdC5tb2NrIGltcG9ydCBwYXRjaCwgTWFnaWNNb2NrLCBBc3luY01vY2sKZnJvbSBodHRweCBpbXBvcnQgQXN5bmNDbGllbnQKCgpjbGFzcyBUZXN0UmVhZGluZXNzU3VjY2Vzc1BhdGg6CiAgICBAcHl0ZXN0Lm1hcmsuYXN5bmNpbwogICAgYXN5bmMgZGVmIHRlc3RfcmVhZHlfYWxsX2hlYWx0aHkoc2VsZiwgY2xpZW50OiBBc3luY0NsaWVudCk6CiAgICAgICAgIiIiQ292ZXIgbGluZXMgNDMtNDQgKGRiIHN1Y2Nlc3MpIGFuZCA1MC01MiAocmVkaXMgc3VjY2VzcykuIiIiCiAgICAgICAgd2l0aCBwYXRjaCgic3JjLmFwaS5yb3V0ZXMuaGVhbHRoLmRiIikgYXMgbW9ja19kYjoKICAgICAgICAgICAgbW9ja19kYi5oZWFsdGhfY2hlY2sgPSBBc3luY01vY2socmV0dXJuX3ZhbHVlPVRydWUpCiAgICAgICAgICAgIHdpdGggcGF0Y2goInNyYy5hcGkucm91dGVzLmhlYWx0aC5yYXRlX2xpbWl0ZXIiKSBhcyBtb2NrX3JsOgogICAgICAgICAgICAgICAgbW9ja19ybC5fcmVkaXMgPSBNYWdpY01vY2soKQogICAgICAgICAgICAgICAgbW9ja19ybC5fcmVkaXMucGluZy5yZXR1cm5fdmFsdWUgPSBUcnVlCiAgICAgICAgICAgICAgICByZXNwID0gYXdhaXQgY2xpZW50LmdldCgiL3JlYWR5IikKICAgICAgICAgICAgICAgIGFzc2VydCByZXNwLnN0YXR1c19jb2RlID09IDIwMAogICAgICAgICAgICAgICAgZGF0YSA9IHJlc3AuanNvbigpCiAgICAgICAgICAgICAgICBhc3NlcnQgZGF0YVsicmVhZHkiXSBpcyBUcnVlCiAgICAgICAgICAgICAgICBhc3NlcnQgZGF0YVsiY2hlY2tzIl1bImRhdGFiYXNlIl0gaXMgVHJ1ZQogICAgICAgICAgICAgICAgYXNzZXJ0IGRhdGFbImNoZWNrcyJdWyJyZWRpcyJdIGlzIFRydWUKCiAgICBAcHl0ZXN0Lm1hcmsuYXN5bmNpbwogICAgYXN5bmMgZGVmIHRlc3RfcmVhZHlfZGJfZXhjZXB0aW9uKHNlbGYsIGNsaWVudDogQXN5bmNDbGllbnQpOgogICAgICAgICIiIkNvdmVyIGxpbmUgNDUgKGRiIGhlYWx0aF9jaGVjayB0aHJvd3MgdG8gRmFsc2UpLiIiIgogICAgICAgIHdpdGggcGF0Y2goInNyYy5hcGkucm91dGVzLmhlYWx0aC5kYiIpIGFzIG1vY2tfZGI6CiAgICAgICAgICAgIG1vY2tfZGIuaGVhbHRoX2NoZWNrID0gQXN5bmNNb2NrKHNpZGVfZWZmZWN0PVJ1bnRpbWVFcnJvcigiZGIgZG93biIpKQogICAgICAgICAgICB3aXRoIHBhdGNoKCJzcmMuYXBpLnJvdXRlcy5oZWFsdGgucmF0ZV9saW1pdGVyIikgYXMgbW9ja19ybDoKICAgICAgICAgICAgICAgIG1vY2tfcmwuX3JlZGlzID0gTWFnaWNNb2NrKCkKICAgICAgICAgICAgICAgIG1vY2tfcmwuX3JlZGlzLnBpbmcucmV0dXJuX3ZhbHVlID0gVHJ1ZQogICAgICAgICAgICAgICAgcmVzcCA9IGF3YWl0IGNsaWVudC5nZXQoIi9yZWFkeSIpCiAgICAgICAgICAgICAgICBhc3NlcnQgcmVzcC5zdGF0dXNfY29kZSA9PSA1MDMKICAgICAgICAgICAgICAgIGRhdGEgPSByZXNwLmpzb24oKQogICAgICAgICAgICAgICAgYXNzZXJ0IGRhdGFbImNoZWNrcyJdWyJkYXRhYmFzZSJdIGlzIEZhbHNlCgogICAgQHB5dGVzdC5tYXJrLmFzeW5jaW8KICAgIGFzeW5jIGRlZiB0ZXN0X3JlYWR5X3JlZGlzX25vdF9pbml0aWFsaXplZChzZWxmLCBjbGllbnQ6IEFzeW5jQ2xpZW50KToKICAgICAgICAiIiJDb3ZlciBsaW5lcyA1Ni01NyAocmVkaXMgTm9uZSB0byBGYWxzZSkuIiIiCiAgICAgICAgd2l0aCBwYXRjaCgic3JjLmFwaS5yb3V0ZXMuaGVhbHRoLmRiIikgYXMgbW9ja19kYjoKICAgICAgICAgICAgbW9ja19kYi5oZWFsdGhfY2hlY2sgPSBBc3luY01vY2socmV0dXJuX3ZhbHVlPVRydWUpCiAgICAgICAgICAgIHdpdGggcGF0Y2goInNyYy5hcGkucm91dGVzLmhlYWx0aC5yYXRlX2xpbWl0ZXIiKSBhcyBtb2NrX3JsOgogICAgICAgICAgICAgICAgbW9ja19ybC5fcmVkaXMgPSBOb25lCiAgICAgICAgICAgICAgICByZXNwID0gYXdhaXQgY2xpZW50LmdldCgiL3JlYWR5IikKICAgICAgICAgICAgICAgIGFzc2VydCByZXNwLnN0YXR1c19jb2RlID09IDUwMwogICAgICAgICAgICAgICAgZGF0YSA9IHJlc3AuanNvbigpCiAgICAgICAgICAgICAgICBhc3NlcnQgZGF0YVsiY2hlY2tzIl1bInJlZGlzIl0gaXMgRmFsc2UKCiAgICBAcHl0ZXN0Lm1hcmsuYXN5bmNpbwogICAgYXN5bmMgZGVmIHRlc3RfcmVhZHlfcmVkaXNfZXhjZXB0aW9uKHNlbGYsIGNsaWVudDogQXN5bmNDbGllbnQpOgogICAgICAgICIiIkNvdmVyIGxpbmUgNTggKHJlZGlzIHBpbmcgdGhyb3dzIHRvIEZhbHNlKS4iIiIKICAgICAgICB3aXRoIHBhdGNoKCJzcmMuYXBpLnJvdXRlcy5oZWFsdGguZGIiKSBhcyBtb2NrX2RiOgogICAgICAgICAgICBtb2NrX2RiLmhlYWx0aF9jaGVjayA9IEFzeW5jTW9jayhyZXR1cm5fdmFsdWU9VHJ1ZSkKICAgICAgICAgICAgd2l0aCBwYXRjaCgic3JjLmFwaS5yb3V0ZXMuaGVhbHRoLnJhdGVfbGltaXRlciIpIGFzIG1vY2tfcmw6CiAgICAgICAgICAgICAgICBtb2NrX3JsLl9yZWRpcyA9IE1hZ2ljTW9jaygpCiAgICAgICAgICAgICAgICBtb2NrX3JsLl9yZWRpcy5waW5nLnNpZGVfZWZmZWN0ID0gRXhjZXB0aW9uKCJyZWRpcyBkb3duIikKICAgICAgICAgICAgICAgIHJlc3AgPSBhd2FpdCBjbGllbnQuZ2V0KCIvcmVhZHkiKQogICAgICAgICAgICAgICAgYXNzZXJ0IHJlc3Auc3RhdHVzX2NvZGUgPT0gNTAzCiAgICAgICAgICAgICAgICBkYXRhID0gcmVzcC5qc29uKCkKICAgICAgICAgICAgICAgIGFzc2VydCBkYXRhWyJjaGVja3MiXVsicmVkaXMiXSBpcyBGYWxzZQo=
+"""
+Extra health route coverage: success paths for /ready (db + redis healthy),
+exception paths for db check, and redis-not-initialized path.
+NOTE: route module is 'src.api.routes.health' (not 'src.src.api.routes.health') due to
+the dual-module import issue (conftest adds both project root and src/ to path).
+"""
+
+import pytest
+import pytest_asyncio
+from unittest.mock import patch, MagicMock, AsyncMock
+from httpx import AsyncClient
+
+
+class TestReadinessSuccessPath:
+    @pytest.mark.asyncio
+    async def test_ready_all_healthy(self, client: AsyncClient):
+        """Cover lines 43-44 (db success) and 50-52 (redis success)."""
+        with patch("src.api.routes.health.db") as mock_db:
+            mock_db.health_check = AsyncMock(return_value=True)
+            with patch("src.api.routes.health.rate_limiter") as mock_rl:
+                mock_rl._redis = MagicMock()
+                mock_rl._redis.ping.return_value = True
+                resp = await client.get("/ready")
+                assert resp.status_code == 200
+                data = resp.json()
+                assert data["ready"] is True
+                assert data["checks"]["database"] is True
+                assert data["checks"]["redis"] is True
+
+    @pytest.mark.asyncio
+    async def test_ready_db_exception(self, client: AsyncClient):
+        """Cover line 45 (db health_check throws to False)."""
+        with patch("src.api.routes.health.db") as mock_db:
+            mock_db.health_check = AsyncMock(side_effect=RuntimeError("db down"))
+            with patch("src.api.routes.health.rate_limiter") as mock_rl:
+                mock_rl._redis = MagicMock()
+                mock_rl._redis.ping.return_value = True
+                resp = await client.get("/ready")
+                assert resp.status_code == 503
+                data = resp.json()
+                assert data["checks"]["database"] is False
+
+    @pytest.mark.asyncio
+    async def test_ready_redis_not_initialized(self, client: AsyncClient):
+        """Cover lines 56-57 (redis None to False)."""
+        with patch("src.api.routes.health.db") as mock_db:
+            mock_db.health_check = AsyncMock(return_value=True)
+            with patch("src.api.routes.health.rate_limiter") as mock_rl:
+                mock_rl._redis = None
+                resp = await client.get("/ready")
+                assert resp.status_code == 503
+                data = resp.json()
+                assert data["checks"]["redis"] is False
+
+    @pytest.mark.asyncio
+    async def test_ready_redis_exception(self, client: AsyncClient):
+        """Cover line 58 (redis ping throws to False)."""
+        with patch("src.api.routes.health.db") as mock_db:
+            mock_db.health_check = AsyncMock(return_value=True)
+            with patch("src.api.routes.health.rate_limiter") as mock_rl:
+                mock_rl._redis = MagicMock()
+                mock_rl._redis.ping.side_effect = Exception("redis down")
+                resp = await client.get("/ready")
+                assert resp.status_code == 503
+                data = resp.json()
+                assert data["checks"]["redis"] is False
